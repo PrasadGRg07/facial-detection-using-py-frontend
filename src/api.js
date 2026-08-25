@@ -1,6 +1,7 @@
-// In development, Vite proxy forwards these to http://localhost:5000
-// In production, set VITE_API_URL to your deployed Flask URL
-export const API_BASE = import.meta.env.VITE_API_URL || '';
+// In development, Vite proxy forwards these to http://localhost:5001
+// In production, set VITE_API_URL to your deployed backend URL
+const RAILWAY_BACKEND = 'https://facial-recognition-backend-production.up.railway.app';
+export const API_BASE = import.meta.env.VITE_API_URL || RAILWAY_BACKEND;
 
 async function request(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, options);
