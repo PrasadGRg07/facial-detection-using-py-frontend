@@ -12,11 +12,30 @@ async function request(path, options = {}) {
 export const getStatus       = ()     => request('/status');
 export const getKnownFaces   = ()     => request('/known_faces');
 export const getDetectionLog = ()     => request('/detection_log');
-export const removeFace      = (name) => request(`/remove_face/${encodeURIComponent(name)}`, { method: 'DELETE' });
+export const removeFace = (name, token) => request(`/remove_face/${encodeURIComponent(name)}`, { 
+  method: 'DELETE',
+  headers: { 'Authorization': `Bearer ${token}` }
+});
+
+export async function adminLogin(password) {
+  return request('/admin/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password })
+  });
+}
 
 export async function registerFace(name, imageFile) {
   const form = new FormData();
   form.append('name', name);
   form.append('image', imageFile);
   return request('/register_face', { method: 'POST', body: form });
+}
+
+export async function detectFaces(base64Image) {
+  return request('/detect', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ image: base64Image })
+  });
 }
