@@ -3,7 +3,8 @@ import Sidebar from './components/Sidebar';
 import Toast from './components/Toast';
 import Dashboard from './pages/Dashboard';
 import RegisterFace from './pages/RegisterFace';
-import KnownFaces from './pages/KnownFaces';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 import { getStatus, getKnownFaces, getDetectionLog } from './api';
 import './index.css';
 
@@ -15,6 +16,7 @@ export default function App() {
   const [knownFaces, setKnownFaces] = useState([]);
   const [detectionLog, setDetectionLog] = useState([]);
   const [toasts, setToasts] = useState([]);
+  const [adminToken, setAdminToken] = useState(null);
 
   const addToast = useCallback((message, type = 'success') => {
     const id = ++toastId;
@@ -60,11 +62,7 @@ export default function App() {
 
   const pages = {
     dashboard: (
-      <Dashboard
-        knownCount={knownFaces.length}
-        detectionLog={detectionLog}
-        serverOnline={serverOnline}
-      />
+      <Dashboard serverOnline={serverOnline} />
     ),
     register: (
       <RegisterFace
@@ -72,10 +70,18 @@ export default function App() {
         addToast={addToast}
       />
     ),
-    known: (
-      <KnownFaces
+    admin: adminToken ? (
+      <AdminDashboard
         faces={knownFaces}
+        detectionLog={detectionLog}
         onRefresh={refreshFaces}
+        addToast={addToast}
+        token={adminToken}
+        onLogout={() => { setAdminToken(null); addToast('Logged out', 'success'); }}
+      />
+    ) : (
+      <AdminLogin
+        onLogin={setAdminToken}
         addToast={addToast}
       />
     ),

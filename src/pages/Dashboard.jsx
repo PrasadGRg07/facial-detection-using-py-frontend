@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { detectFaces } from '../api';
 
-export default function Dashboard({ knownCount, detectionLog, serverOnline }) {
+export default function Dashboard({ serverOnline }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [streamActive, setStreamActive] = useState(false);
@@ -88,33 +88,14 @@ export default function Dashboard({ knownCount, detectionLog, serverOnline }) {
 
   return (
     <div>
-      <div className="page-header">
-        <h2>Live Recognition Feed</h2>
+      <div className="page-header" style={{ textAlign: 'center' }}>
+        <h2>Live Recognition Scanner</h2>
         <p>Real-time facial recognition from your webcam</p>
       </div>
 
-      {/* Stats Row */}
-      <div className="stats-row">
-        <div className="stat-card">
-          <div className="stat-value">{knownCount}</div>
-          <div className="stat-label">Registered Faces</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value">{detectionLog.length}</div>
-          <div className="stat-label">Detections (session)</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value" style={{ color: serverOnline ? 'var(--accent)' : 'var(--accent-red)', fontSize: 18 }}>
-            {serverOnline ? '● LIVE' : '● OFFLINE'}
-          </div>
-          <div className="stat-label">Server Status</div>
-        </div>
-      </div>
-
-      <div className="dashboard-grid">
-        {/* Left: Video Feed */}
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-          <div className="video-container" style={{ position: 'relative' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}>
+        <div className="card" style={{ padding: 0, overflow: 'hidden', width: '100%', maxWidth: 700 }}>
+          <div className="video-container" style={{ position: 'relative', minHeight: 400, backgroundColor: '#000' }}>
             <video
               ref={videoRef}
               autoPlay
@@ -135,53 +116,20 @@ export default function Dashboard({ knownCount, detectionLog, serverOnline }) {
               }}
             />
             {!streamActive && (
-              <div className="video-placeholder">
-                <div className="icon">📷</div>
-                <p>Waiting for Webcam access...</p>
+              <div className="video-placeholder" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+                <div className="icon" style={{ fontSize: 40 }}>📷</div>
+                <p style={{ marginTop: 12 }}>Waiting for Webcam access...</p>
               </div>
             )}
             {streamActive && (
-              <div className="video-overlay">
-                <div className="video-badge">
-                  <span className="dot" style={{ width: 6, height: 6 }} />
-                  LIVE
-                </div>
-                <div className="video-badge" style={{ color: 'var(--text-secondary)' }}>
-                  Webcam
+              <div className="video-overlay" style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 8 }}>
+                <div className="video-badge" style={{ backgroundColor: 'rgba(0,0,0,0.6)', padding: '4px 8px', borderRadius: 4, display: 'flex', alignItems: 'center', gap: 6, color: '#fff', fontSize: 12 }}>
+                  <span className="dot" style={{ width: 8, height: 8, backgroundColor: serverOnline ? '#00FF80' : '#FF5000', borderRadius: '50%' }} />
+                  {serverOnline ? 'SERVER ONLINE' : 'SERVER OFFLINE'}
                 </div>
               </div>
             )}
           </div>
-        </div>
-
-        {/* Right: Detection Log */}
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Detection Log</span>
-            <span className="text-muted text-sm">{detectionLog.length} events</span>
-          </div>
-
-          {detectionLog.length === 0 ? (
-            <div className="empty-state" style={{ padding: '24px 0' }}>
-              <div className="icon" style={{ fontSize: 32 }}>👁️</div>
-              <p style={{ marginTop: 8 }}>No detections yet</p>
-            </div>
-          ) : (
-            <div className="log-list">
-              {detectionLog.map((entry, i) => (
-                <div
-                  key={i}
-                  className={`log-item ${entry.name === 'Unknown' ? 'unknown' : ''}`}
-                >
-                  <span style={{ fontSize: 14 }}>
-                    {entry.name === 'Unknown' ? '❓' : '✅'}
-                  </span>
-                  <span className="log-name">{entry.name}</span>
-                  <span className="log-time">{entry.time}</span>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </div>

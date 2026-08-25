@@ -2,7 +2,7 @@ export default function Sidebar({ page, setPage, serverOnline, knownCount }) {
   const navItems = [
     { id: 'dashboard',    icon: '🎥', label: 'Live Feed' },
     { id: 'register',     icon: '➕', label: 'Register Face' },
-    { id: 'known',        icon: '👥', label: 'Known Faces' },
+    { id: 'admin',        icon: '🔒', label: 'Admin Panel' },
   ];
 
   return (
